@@ -2,7 +2,7 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
 
-  NAME            => 'Time::Profile',
-  VERSION_FROM    => 'lib/Time/Profile.pm'
+  NAME            => 'Time::Profiler',
+  VERSION_FROM    => 'lib/Time/Profiler.pm'
 
 );

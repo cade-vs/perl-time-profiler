@@ -1,7 +1,7 @@
-Time::Profile
+Time::Profiler
 ==============
 
-Time::Profile provides simple API for measuring code speed and reporting.
+Time::Profiler provides simple API for measuring code speed and reporting.
 
 INSTALLATION
 
@@ -14,7 +14,7 @@ To install this module type the following:
 
 DEPENDENCIES
 
-Time::Profile requires the following non-core perl modules:
+Time::Profiler requires the following non-core perl modules:
 
     Time::HR
 

@@ -3,7 +3,7 @@ COPYING
 Changes
 README
 Makefile.PL
-lib/Time/Profile.pm
-lib/Time/Profile/Scope.pm
+lib/Time/Profiler.pm
+lib/Time/Profiler/Scope.pm
 
 

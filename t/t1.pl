@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 use strict;
-use Time::Profile;
+use Time::Profiler;
 use Data::Dumper;
 
-my $pr = new Time::Profile;
+my $pr = new Time::Profiler;
 
 print "begin main\n";
 my $ps1 = $pr->begin_scope( 'MAIN' );

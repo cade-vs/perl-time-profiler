@@ -1,14 +1,14 @@
 ##############################################################################
 #
-#  Time::Profile::Scope
+#  Time::Profiler::Scope
 #  Vladi Belperchinov-Shabanski "Cade" <cade@biscom.net> <cade@datamax.bg>
 #
-#  This is internal module, see Time::Profile for external API
+#  This is internal module, see Time::Profiler for external API
 #
 #  DISTRIBUTED UNDER GPLv2
 #
 ##############################################################################
-package Time::Profile::Scope;
+package Time::Profiler::Scope;
 use strict;
 use Time::HR;
 use Carp;
@@ -21,7 +21,7 @@ sub new
   my $profiler = shift;
   my $key      = shift;
   
-  carp( "second argument is expected to be Time::Profiler" ) unless ref( $profiler ) eq 'Time::Profile';
+  carp( "second argument is expected to be Time::Profiler" ) unless ref( $profiler ) eq 'Time::Profiler';
   
   $class = ref( $class ) || $class;
   my $self = {
@@ -76,7 +76,7 @@ sub key
   my $se = 1; # skip eval
   while ( my ( $pack, $file, $line, $subname, $hasargs, $wantarray, $evaltext, $is_require, $hints, $bitmask, $hinthash ) = caller($i++) )
     {
-    next if $subname =~ /^Time::Profile::/; # skip self
+    next if $subname =~ /^Time::Profiler::/; # skip self
     next if $subname eq '(eval)' and $se;
     $se = 0;
     push @key, "$subname";
