@@ -41,17 +41,30 @@ sub begin_scope
 sub report
 {
   my $self = shift;
+
+  my $hr = $self->{ 'PROFILE_DATA' };
   
-  return Dumper( $self->__data() );
+  return Dumper( $hr );
 }
 
 ### INTERNAL #################################################################
 
-sub __data
+sub __add_dt
 {
   my $self = shift;
+  my $key  = shift;
+  my $dt   = shift;
   
-  return $self->{ 'PROFILE_DATA' }
+  my @key = split /\//, $key;
+  my $hr = $self->{ 'PROFILE_DATA' };
+  
+  while( my $k = shift @key )
+    {
+    $hr->{ $k } ||= {};
+    $hr = $hr->{ $k };
+    }
+  $hr->{ 'COUNT' }++;
+  $hr->{ 'TIME'  } += $dt;
 }
 
 ##############################################################################

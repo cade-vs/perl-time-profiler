@@ -22,7 +22,6 @@ sub new
   my $key      = shift;
   
   carp( "second argument is expected to be Time::Profiler" ) unless ref( $profiler ) eq 'Time::Profile';
-  carp( "scope timer key required" ) unless $key;
   
   $class = ref( $class ) || $class;
   my $self = {
@@ -50,13 +49,12 @@ sub stop
   
   $dt /= 1_000_000_000; # report in seconds
   
-  my $pr = $self->__pr()->__data();
+  my $pr = $self->__pr();
   
-  my $key = $self->{ 'KEY' };
+  my $key = $self->key();
 
-  $pr->{ "$key:COUNT" }++;
-  $pr->{ "$key:TIME"  } += $dt;
-  
+  $pr->__add_dt( $key, $dt );
+
   delete $self->{ 'START' };
 }
 
@@ -64,9 +62,31 @@ sub DESTROY
 {
   my $self = shift;
 
-print "SCOPE DESTROY\n";
-  
   $self->stop() if $self->{ 'START' };
+}
+
+sub key
+{
+  my $self = shift;
+
+  return $self->{ 'KEY' } if $self->{ 'KEY' };
+
+  my @key;
+  my $i = 0;
+  my $se = 1; # skip eval
+  while ( my ( $pack, $file, $line, $subname, $hasargs, $wantarray, $evaltext, $is_require, $hints, $bitmask, $hinthash ) = caller($i++) )
+    {
+    next if $subname =~ /^Time::Profile::/; # skip self
+    next if $subname eq '(eval)' and $se;
+    $se = 0;
+    push @key, "$subname";
+    }
+
+  push @key, 'main::';
+    
+  my $key = join '/', reverse @key;
+  
+  return $key;
 }
 
 ### INTERNAL #################################################################
