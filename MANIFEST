@@ -1,0 +1,9 @@
+MANIFEST
+COPYING
+Changes
+README
+Makefile.PL
+lib/Time/Profile.pm
+lib/Time/Profile/Scope.pm
+
+
