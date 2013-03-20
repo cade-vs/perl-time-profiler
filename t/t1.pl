@@ -11,6 +11,8 @@ my $ps2 = $pr->begin_scope();
 
 t1();
 sleep( 1 );
+t2();
+sleep( 1 );
 
 $ps1->stop();
 $ps2->stop();
