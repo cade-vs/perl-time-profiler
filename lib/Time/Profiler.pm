@@ -43,11 +43,41 @@ sub report
   my $self = shift;
 
   my $hr = $self->{ 'PROFILER_DATA' };
+
+  my $text = $self->__report_level( $hr, 0 );
+
+  $text .= "\n\n\n" . Dumper( $hr );
   
-  return Dumper( $hr );
+  return $text;
 }
 
 ### INTERNAL #################################################################
+
+sub __report_level
+{
+  my $self  = shift;
+  my $hr    = shift;
+  my $level = shift;
+  
+  my @k = grep { ! /^:(TIME|COUNT)/ } keys %$hr;
+  print "-- @k\n";
+  @k = sort { $hr->{ $b }->{ ':TIME' } <=> $hr->{ $a }->{ ':TIME' } } @k;
+
+  return "\n" if @k == 0;
+  
+  my $text;
+  for my $k ( @k )
+    {
+    my $t = $hr->{ $k }->{ ':TIME'  };
+    my $c = $hr->{ $k }->{ ':COUNT' };
+    
+    my $ts = $c == 1 ? 'time' : 'times';
+    $text .= ( "    " x $level ) . "$k is called $c $ts = $t sec.\n";
+    $text .= $self->__report_level( $hr->{ $k }, $level + 1 );
+    }
+  
+  return $text;  
+}
 
 sub __add_dt
 {
@@ -63,8 +93,8 @@ sub __add_dt
     $hr->{ $k } ||= {};
     $hr = $hr->{ $k };
     }
-  $hr->{ 'COUNT' }++;
-  $hr->{ 'TIME'  } += $dt;
+  $hr->{ ':COUNT' }++;
+  $hr->{ ':TIME'  } += $dt;
 }
 
 ##############################################################################

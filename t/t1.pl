@@ -26,11 +26,11 @@ sub t1
   my $ps1 = $pr->begin_scope( 'MAIN/T1' );
   my $ps2 = $pr->begin_scope();
   
-  sleep( 2 );
+  sleep( 1 );
   t2();
-  sleep( 2 );
+  sleep( 1 );
   t2();
-  sleep( 2 );
+  sleep( 1 );
 }
 
 sub t2
@@ -40,5 +40,5 @@ sub t2
   my $ps1 = $pr->begin_scope( 'MAIN/T1/T2' );
   my $ps2 = $pr->begin_scope();
   
-  sleep( 2 );
+  sleep( 1 );
 }
