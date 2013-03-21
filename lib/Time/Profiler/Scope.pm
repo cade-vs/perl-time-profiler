@@ -104,5 +104,24 @@ sub __pr
 }
 
 ##############################################################################
+
+=pod
+
+=head1 NAME
+
+Time::Profiler::Scope is used internally by Time::Profiler. 
+See Time::Profiler manual.
+
+=head1 AUTHOR
+
+  Vladi Belperchinov-Shabanski "Cade"
+
+  <cade@biscom.net> <cade@datamax.bg> <cade@cpan.org>
+
+  http://cade.datamax.bg
+
+=cut
+
+##############################################################################
 1;
 ##############################################################################
