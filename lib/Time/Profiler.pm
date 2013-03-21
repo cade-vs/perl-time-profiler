@@ -31,9 +31,8 @@ sub new
 sub begin_scope
 {
   my $self = shift;
-  my $key  = shift;
   
-  my $scope = new Time::Profiler::Scope( $self, $key );
+  my $scope = new Time::Profiler::Scope( $self, @_ );
   $scope->start();
   
   return $scope;
@@ -102,18 +101,32 @@ sub __add_dt
   my $self = shift;
   my $key  = shift;
   my $dt   = shift;
+
+  my $c = 1 if $key =~ s/^\+//; # cumulative
   
   my @key = split /\//, $key;
   my $hrs = $self->{ 'PROFILER_DATA_SINGLE' };
   my $hrt = $self->{ 'PROFILER_DATA_TREE'   };
-  $hrs->{ $key[-1] }{ ':COUNT' }++;
-  $hrs->{ $key[-1] }{ ':TIME'  } += $dt;
   
+  if( ! $c )
+    {
+    $hrs->{ $key[-1] }{ ':COUNT' }++;
+    $hrs->{ $key[-1] }{ ':TIME'  } += $dt;
+    }
+
+  my $ck; # cumulative key
   while( my $k = shift @key )
     {
     $hrt->{ $k } ||= {};
     $hrt = $hrt->{ $k };
+    next unless $c;
+    $ck .= "$k/";
+    $hrs->{ $ck }{ ':COUNT' }++;
+    $hrs->{ $ck }{ ':TIME'  } += $dt;
+    $hrt->{ ':COUNT' }++;
+    $hrt->{ ':TIME'  } += $dt;
     }
+  return if $c;  
   $hrt->{ ':COUNT' }++;
   $hrt->{ ':TIME'  } += $dt;
 }

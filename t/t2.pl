@@ -21,7 +21,7 @@ sub t1
 {
   print "begin t1\n";
   
-  my $_ps = $pr->begin_scope( 'T1' );
+  my $_ps = $pr->begin_scope( 'MAIN/T1' );
   
   sleep( 1 );
   t2();
@@ -34,7 +34,7 @@ sub t2
 {
   print "begin t2\n";
 
-  my $_ps = $pr->begin_scope( 'T2' );
+  my $_ps = $pr->begin_scope( 'MAIN/T1/T2' );
   
   sleep( 1 );
 }

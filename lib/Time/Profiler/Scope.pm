@@ -19,14 +19,16 @@ sub new
 {
   my $class    = shift;
   my $profiler = shift;
-  my $key      = shift;
+  my @keys     = @_;
   
   carp( "second argument is expected to be Time::Profiler" ) unless ref( $profiler ) eq 'Time::Profiler';
+
+  push @keys, '*' if @keys == 0;
   
   $class = ref( $class ) || $class;
   my $self = {
                'PROFILER' => $profiler,
-               'KEY'      => $key,
+               'KEYS'     => \@keys,
              };
   bless $self, $class;
   return $self;
@@ -52,9 +54,13 @@ sub stop
   
   my $pr = $self->__pr();
   
-  my $key = $self->key();
+  my $keys = $self->{ 'KEYS' };
 
-  $pr->__add_dt( $key, $dt );
+  for my $key ( @$keys )
+    {
+    $key = $self->auto_key() if $key =~ /^\*?$/;
+    $pr->__add_dt( $key, $dt );
+    }
 
   delete $self->{ 'START' };
 }
@@ -66,11 +72,9 @@ sub DESTROY
   $self->stop() if $self->{ 'START' };
 }
 
-sub key
+sub auto_key
 {
   my $self = shift;
-
-  return $self->{ 'KEY' } if $self->{ 'KEY' };
 
   my @key;
   my $i = 0;

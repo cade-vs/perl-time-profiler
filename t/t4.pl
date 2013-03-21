@@ -6,7 +6,7 @@ use Data::Dumper;
 my $pr = new Time::Profiler;
 
 print "begin main\n";
-my $_ps = $pr->begin_scope( 'MAIN' );
+my $_ps = $pr->begin_scope();
 
 t1();
 sleep( 1 );
@@ -21,7 +21,7 @@ sub t1
 {
   print "begin t1\n";
   
-  my $_ps = $pr->begin_scope( 'T1' );
+  my $_ps = $pr->begin_scope( '+ALL_T_FUNCS/T1' );
   
   sleep( 1 );
   t2();
@@ -34,7 +34,7 @@ sub t2
 {
   print "begin t2\n";
 
-  my $_ps = $pr->begin_scope( 'T2' );
+  my $_ps = $pr->begin_scope( '+ALL_T_FUNCS/T2' );
   
   sleep( 1 );
 }
