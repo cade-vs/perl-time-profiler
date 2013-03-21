@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 use strict;
 use Time::Profiler;
-use Data::Dumper;
 
 my $pr = new Time::Profiler;
 
@@ -9,9 +8,8 @@ print "begin main\n";
 my $_ps = $pr->begin_scope( 'MAIN' );
 
 t1();
-sleep( 1 );
 t2();
-sleep( 1 );
+sleep( 2 );
 
 $_ps->stop();
 
@@ -23,11 +21,9 @@ sub t1
   
   my $_ps = $pr->begin_scope( 'MAIN/T1' );
   
-  sleep( 1 );
   t2();
-  sleep( 1 );
+  sleep( 3 );
   t2();
-  sleep( 1 );
 }
 
 sub t2
