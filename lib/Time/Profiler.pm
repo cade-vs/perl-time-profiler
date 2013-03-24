@@ -12,7 +12,7 @@ use Time::Profiler::Scope;
 use Data::Dumper;
 use strict;
 
-our $VERSION = '1.00';
+our $VERSION = '1.01';
 
 ##############################################################################
 
@@ -259,14 +259,14 @@ Manual names can force fixed scope names:
 
     sub t1
     {
-      my $_ps = $pr->begin_scope( 'ROOT/T1' );
+      # T1 here
       t2();
       sleep( 3 );
     }
 
     sub t2
     {
-      my $_ps = $pr->begin_scope( 'ROOT/T2' );
+      my $_ps = $pr->begin_scope( 'ROOT/T1/T2' );
       sleep( 2 );
     }
 
@@ -429,6 +429,12 @@ Output will be:
 Total program execution time is actually 7 sec. but we see that ALL_FUNCS says
 9 sec. This is because t2() time is measured twice: once as separate function
 call and second time as nested function.
+
+=head1 GITHUB REPOSITORY
+
+  https://github.com/cade4/perl-time-profiler
+  
+  git clone git://github.com/cade4/perl-time-profiler.git
 
 =head1 AUTHOR
 
