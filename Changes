@@ -1,5 +1,9 @@
 Revision history for Perl extension Time::Profiler
 
+1.02  2013.05.24
+
+    1. changed github urls
+
 1.01  2013.03.24
 
     1. fixed docs

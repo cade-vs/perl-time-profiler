@@ -12,7 +12,7 @@ use Time::Profiler::Scope;
 use Data::Dumper;
 use strict;
 
-our $VERSION = '1.01';
+our $VERSION = '1.02';
 
 ##############################################################################
 
@@ -432,9 +432,9 @@ call and second time as nested function.
 
 =head1 GITHUB REPOSITORY
 
-  https://github.com/cade4/perl-time-profiler
+  https://github.com/cade-vs/perl-time-profiler
   
-  git clone git://github.com/cade4/perl-time-profiler.git
+  git clone git://github.com/cade-vs/perl-time-profiler.git
 
 =head1 AUTHOR
 
