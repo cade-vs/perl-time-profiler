@@ -12,7 +12,7 @@ use Time::Profiler::Scope;
 use Data::Dumper;
 use strict;
 
-our $VERSION = '1.02';
+our $VERSION = '1.30';
 
 ##############################################################################
 
@@ -252,9 +252,11 @@ Output will be:
 
 =head1 MANUAL SCOPE NAMES
 
-Manual names can force fixed scope names:
+Manual names can force fixed scope names. All names without '/' are considered
+SINGLE scopes. All names with '/' are TREE scope names. SINGLE and TREE scopes
+are reported separately:
 
-    my $_ps = $pr->begin_scope( 'ROOT' );
+    my $_ps = $pr->begin_scope( 'ALL' ); # SINGLE scope
 
     t1();
     t2();
@@ -271,7 +273,7 @@ Manual names can force fixed scope names:
 
     sub t2
     {
-      my $_ps = $pr->begin_scope( 'ROOT/T1/T2' );
+      my $_ps = $pr->begin_scope( 'ROOT/T1/T2' ); # TREE scope
       sleep( 2 );
     }
 
@@ -280,7 +282,6 @@ This will force main:: scope name to be 'ROOT' and only nested t2() name
 
     SINGLE PROFILE SCOPES
         1 time  =      5.000 sec. ROOT
-        1 time  =      2.000 sec. T2
 
     TREE PROFILE SCOPES
         1 time  =      5.000 sec. ROOT
@@ -292,9 +293,12 @@ the 'ROOT' scope.
 
 =head1 CUMULATIVE SCOPE NAMES
 
-Cumulative names begin with '+' and allow measurement aggregation for same 
-type functions. For example database module may have read_data() and 
-write_data() function, which read or write data from/to different tables:
+TREE scopes can be cumulative. Cumulative names begin with '+' and allow 
+measurement aggregation for same type functions.
+
+For example database module may have read_data() and 
+write_data() function, which read or write data from/to different tables
+(in this example table names are 'CLIENTS' and 'ADDRESSES'):
 
   sub read_data
   {
@@ -312,55 +316,58 @@ write_data() function, which read or write data from/to different tables:
 
 Possible output:
 
-    SINGLE PROFILE SCOPES
+    TREE PROFILE SCOPES
         1 time  =     14.000 sec. DB
-        1 time  =      8.000 sec. DB/READ_DATA
-        1 time  =      6.000 sec. DB/WRITE_DATA
-        2 time  =      4.000 sec. DB/READ_DATA/CLIENTS
-        2 time  =      4.000 sec. DB/READ_DATA/ADDRESSES
-        1 time  =      3.000 sec. DB/WRITE_DATA/CLIENTS
-        1 time  =      3.000 sec. DB/WRITE_DATA/ADDRESSES
+        1 time  =      8.000 sec. |   READ_DATA
+        2 time  =      4.000 sec. |   |   CLIENTS
+        2 time  =      4.000 sec. |   |   ADDRESSES
+        1 time  =      6.000 sec. |   WRITE_DATA
+        1 time  =      3.000 sec. |   |   CLIENTS
+        1 time  =      3.000 sec. |   |   ADDRESSES
 
 
 This will measure several things:
 
 =over 4
 
-=item all calls to read_data() and write_data() regardless $table_name (DB)
-
-=item all calls to read_data() regardless $table_name (DB/READ_DATA)
-
-=item all calls to write_data() regardless $table_name (DB/WRITE_DATA)
-
 =item all calls to read_data() for specific $table_name (DB/READ_DATA/$table_name)
 
 =item all calls to write_data() for specific $table_name (DB/WRITE_DATA/$table_name)
 
+=item will accumulate all read stats for tables (DB/READ_DATA)
+
+=item will accumulate all write stats for tables (DB/WRITE_DATA)
+
+=item will accumulate all database stats for all operations for all tables (DB)
+
 =back  
 
-This is almost complete set of possible measurements. The only missing case is
-measuring of all DB access for specific table (DB/*/$table_name). To achieve this
-MIXED names must be used (see below):
+Other case could require measuring of all DB access for specific table 
+(i.e. kind of "DB/*/$table_name"). To achieve this and do not lose the previous
+prifile stats, requires multiple scope names:
 
   sub read_data
   {
     my $table_name = shift;
-    my $_ps = $pr->begin_scope( "+DB/READ_DATA/$table_name", "+DB_$table_name" );
+    my $_ps = $pr->begin_scope( "+DB/READ_DATA/$table_name", "+DB_TABLES/$table_name" );
     ...
   }
 
+This will measure time stats by database access (DB) per table and per operation:
+
 Possible output:
 
-    SINGLE PROFILE SCOPES
+    TREE PROFILE SCOPES
         1 time  =     14.000 sec. DB
-        1 time  =      8.000 sec. DB/READ_DATA
-        3 time  =      7.000 sec. DB_CLIENTS
-        3 time  =      7.000 sec. DB_ADDRESSES
-        1 time  =      6.000 sec. DB/WRITE_DATA
-        2 time  =      4.000 sec. DB/READ_DATA/CLIENTS
-        2 time  =      4.000 sec. DB/READ_DATA/ADDRESSES
-        1 time  =      3.000 sec. DB/WRITE_DATA/CLIENTS
-        1 time  =      3.000 sec. DB/WRITE_DATA/ADDRESSES
+        1 time  =      8.000 sec. |   READ_DATA
+        2 time  =      4.000 sec. |   |   CLIENTS
+        2 time  =      4.000 sec. |   |   ADDRESSES
+        1 time  =      6.000 sec. |   WRITE_DATA
+        1 time  =      3.000 sec. |   |   CLIENTS
+        1 time  =      3.000 sec. |   |   ADDRESSES
+        6 time  =     14.000 sec. DB_TABLES
+        3 time  =      7.000 sec. |   CLIENTS
+        3 time  =      7.000 sec. |   ADDRESSES
 
 =head1 MIXED NAMES
 
@@ -434,6 +441,11 @@ Output will be:
 Total program execution time is actually 7 sec. but we see that ALL_FUNCS says
 9 sec. This is because t2() time is measured twice: once as separate function
 call and second time as nested function.
+
+=head1 DEPENDENCIES
+
+  Time::HR
+  Data::Dumper
 
 =head1 GITHUB REPOSITORY
 
