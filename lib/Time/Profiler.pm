@@ -83,8 +83,10 @@ sub __report_level
     my $t = $hr->{ $k }->{ ':TIME'  };
     my $c = $hr->{ $k }->{ ':COUNT' };
 
+    $t /= 1_000_000_000; # convert to seconds
+
     my $ts = $c == 1 ? 'time' : 'times';
-    my $rs = sprintf( "%5s %-5s = %10.03f sec. ", $c, $ts, $t );
+    my $rs = sprintf( "%5s %-5s = %12.06f sec. ", $c, $ts, $t );
     $rs = ' ' x length( $rs ) if $c == 0;
 
     $text .= $rs . ( "|    " x $level ) . $k;
@@ -108,21 +110,24 @@ sub __add_dt
   my $hrs = $self->{ 'PROFILER_DATA_SINGLE' };
   my $hrt = $self->{ 'PROFILER_DATA_TREE'   };
   
-  if( ! $c )
+  if( @key == 1 ) 
     {
-    $hrs->{ $key[-1] }{ ':COUNT' }++;
-    $hrs->{ $key[-1] }{ ':TIME'  } += $dt;
+    # no slashes, no tree -- single scope
+    $hrs->{ $key }{ ':COUNT' }++;
+    $hrs->{ $key }{ ':TIME'  } += $dt;
+    return;
     }
 
+  # tree scope
   my $ck; # cumulative key
   while( my $k = shift @key )
     {
     $hrt->{ $k } ||= {};
     $hrt = $hrt->{ $k };
-    next unless $c;
     $ck .= "$k/";
-    $hrs->{ $ck }{ ':COUNT' }++;
-    $hrs->{ $ck }{ ':TIME'  } += $dt;
+    next unless $c;
+#    $hrs->{ $ck }{ ':COUNT' }++;
+#    $hrs->{ $ck }{ ':TIME'  } += $dt;
     $hrt->{ ':COUNT' }++;
     $hrt->{ ':TIME'  } += $dt;
     }

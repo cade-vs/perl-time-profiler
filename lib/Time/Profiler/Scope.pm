@@ -49,9 +49,6 @@ sub stop
 
   my $dt = gethrtime() - $self->{ 'START' };
   
-  $dt = int( $dt / 1_000_000 ); # convert to miliseconds
-  $dt /= 1_000; # convert to seconds
-  
   my $pr = $self->__pr();
   
   my $keys = $self->{ 'KEYS' };
