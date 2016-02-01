@@ -227,14 +227,14 @@ scope name is left empty or '*':
 
     sub t1
     {
-      my $_ps = $pr->begin_scope(); # same as below
+      my $_ps = $pr->begin_scope(); # same as below (i.e. '*')
       t2();
       sleep( 3 );
     }
 
     sub t2
     {
-      my $_ps = $pr->begin_scope( '*' ); # same as above
+      my $_ps = $pr->begin_scope( '*' ); # same as above (i.e. if empty)
       sleep( 2 );
     }
 
@@ -256,7 +256,7 @@ Manual names can force fixed scope names. All names without '/' are considered
 SINGLE scopes. All names with '/' are TREE scope names. SINGLE and TREE scopes
 are reported separately:
 
-    my $_ps = $pr->begin_scope( 'ALL' ); # SINGLE scope
+    my $_ps = $pr->begin_scope( 'ROOT' ); # SINGLE scope
 
     t1();
     t2();
@@ -281,12 +281,12 @@ This will force main:: scope name to be 'ROOT' and only nested t2() name
 'ROOT/T1/T2'. Output will be:
 
     SINGLE PROFILE SCOPES
-        1 time  =      5.000 sec. ROOT
+        1 time  =      7.000 sec. ROOT
 
     TREE PROFILE SCOPES
-        1 time  =      5.000 sec. ROOT
+                                  ROOT
                                   |    T1
-        1 time  =      2.000 sec. |    |    T2
+        1 time  =      4.000 sec. |    |    T2
 
 So t1() has no profile stats but t2() scope name (path) is measured inside
 the 'ROOT' scope.
