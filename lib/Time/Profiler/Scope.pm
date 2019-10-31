@@ -1,7 +1,7 @@
 ##############################################################################
 #
 #  Time::Profiler::Scope
-#  Vladi Belperchinov-Shabanski "Cade" <cade@biscom.net> <cade@datamax.bg>
+#  2013-2019 (c) Vladi Belperchinov-Shabanski "Cade" <cade@bis.bg>
 #
 #  This is internal module, see Time::Profiler for external API
 #
@@ -113,7 +113,7 @@ See Time::Profiler manual.
 
   Vladi Belperchinov-Shabanski "Cade"
 
-  <cade@biscom.net> <cade@datamax.bg> <cade@cpan.org>
+  <cade@bis.bg> <cade@cpan.org>
 
   http://cade.datamax.bg
 

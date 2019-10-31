@@ -1,7 +1,7 @@
 ##############################################################################
 #
 #  Time::Profiler
-#  Vladi Belperchinov-Shabanski "Cade" <cade@biscom.net> <cade@datamax.bg>
+#  2013-2019 (c) Vladi Belperchinov-Shabanski "Cade" <cade@bis.bg>
 #
 #  DISTRIBUTED UNDER GPLv2
 #
@@ -457,7 +457,7 @@ call and second time as nested function.
 
   Vladi Belperchinov-Shabanski "Cade"
 
-  <cade@biscom.net> <cade@datamax.bg> <cade@cpan.org>
+  <cade@bis.bg> <cade@cpan.org>
 
   http://cade.datamax.bg
 
