@@ -142,7 +142,7 @@ sub __add_dt
 
 =head1 NAME
 
-Time::Profiler provides scope-automatic or manual code time measurement. 
+Time::Profiler - Provides scope-automatic or manual code time measurement.
 
 =head1 SYNOPSIS
 
